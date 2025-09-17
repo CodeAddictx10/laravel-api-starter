@@ -4,43 +4,25 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Swagger\Attributes\Get;
 use Illuminate\Http\Request;
 
-/**
- * @group User management
- *
- * APIs for managing users
- */
-final class UserController extends Controller
+final class UserController
 {
-    /**
-     * Get Users
-     *
-     * Get all users
-     *
-     * @response {
-     *      "success": true,
-     *      "data": []
-     * }
-     * @response 404 {
-     *      "success": false,
-     *      "error": "No user was found"
-     * }
-     * @response 500 {
-     *      "success": false,
-     *      "message": "No query results for model"
-     * }
-     */
+    #[Get(
+        path: '/v1/users',
+        summary: 'Get all users',
+        tags: 'Users',
+        responses: [['statusCode' => 200, 'description' => 'OK', 'modelSchema' => 'User', 'isArray' => true]]
+    )]
     public function index()
     {
-        //
+        return response()->json([
+            'success' => true,
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         //
