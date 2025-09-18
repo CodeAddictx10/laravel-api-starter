@@ -14,16 +14,19 @@ final class Get extends OAGet
         string $path,
         string $tags,
         string $summary,
-        array $responses = []
+        array $responses = [],
+        array $parameters = []
     ) {
-
         $builder = new Response($responses);
+
+        $parameters = Param::build($path, $parameters);
 
         parent::__construct(
             path: $path,
             summary: $summary,
             tags: [$tags],
-            responses: $builder->responses
+            responses: $builder->responses,
+            parameters: $parameters
         );
     }
 }

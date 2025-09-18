@@ -15,16 +15,20 @@ final class Patch extends OAPatch
         string $tags,
         string $summary,
         array $responses = [],
+        array $parameters = [],
         ?string $requestBody = null
     ) {
         $builder = new Response($responses);
+
+        $parameters = Param::build($path, $parameters);
 
         parent::__construct(
             path: $path,
             summary: $summary,
             tags: [$tags],
             responses: $builder->responses,
-            requestBody: $requestBody ? RequestBody::create($requestBody) : null
+            requestBody: $requestBody ? RequestBody::create($requestBody) : null,
+            parameters: $parameters
         );
     }
 }

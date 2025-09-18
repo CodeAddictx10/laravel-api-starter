@@ -1,0 +1,107 @@
+<?php
+
+namespace {{ namespace }};
+
+use {{ rootNamespace }}Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Swagger\Attributes\Delete;
+use App\Swagger\Attributes\Get;
+use App\Swagger\Attributes\Patch;
+use App\Swagger\Attributes\Post;
+
+class {{ class }} extends Controller
+{
+
+    /**
+     * Display a listing of the resource.
+     */
+
+      #[Get(
+        path: '/{{class}}',
+        summary: 'Get {{class}}',
+        tags: '{{class}}',
+        parameters: [
+            ['query' => ''],
+            ['filter' => ''],
+            ['query' => ''],
+            ['query' => ''],
+        ],
+        responses: [
+            ['statusCode' => 200, 'description' => 'OK'],
+        ]
+    )]
+    public function index()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+
+    #[Post(
+        path: '/{{class}}',
+        summary: 'Create a new {{class}}',
+        tags: '{{class}}',
+        responses: [
+            ['statusCode' => 201, 'description' => 'Created successfully'],
+        ],
+        requestBody: ''
+    )]
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    #[Get(
+        path: '/{{class}}/{id}',
+        summary: 'Get {{class}}',
+        tags: '{{class}}',
+        parameters: [
+            ['path' => 'id:integer'],
+        ],
+        responses: [
+            ['statusCode' => 200, 'description' => 'OK'],
+        ]
+    )]
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    #[Patch(
+        path: '/{{class}}/{id}',
+        summary: 'Partially update {{class}}',
+        tags: '{{class}}',
+        parameters: [
+            ['path' => 'id:integer'],
+        ],
+        requestBody: '',
+        responses: [
+            ['statusCode' => 200, 'description' => 'Resource updated successfully'],
+        ],
+    )]
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    #[Delete(
+        path: '/{{class}}/{id}',
+        summary: 'Delete {{class}}',
+        tags: '{{class}}',
+    )]
+    public function destroy(string $id)
+    {
+        //
+    }
+}

@@ -1,0 +1,36 @@
+<?php
+
+namespace {{ namespace }};
+
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use WendellAdriel\ValidatedDTO\ValidatedDTO;
+
+#[Schema(
+    schemaName: {{ class }},
+    dtoClass: self::class,
+    examples: [
+        
+    ]
+)]
+class {{ class }} extends ValidatedDTO
+{
+    protected function rules(): array
+    {
+        return [];
+    }
+
+    protected function defaults(): array
+    {
+        return [];
+    }
+
+    protected function casts(): array
+    {
+        return [];
+    }
+
+    public function failedValidation(): void
+    {
+        throw new BadRequestHttpException($this->validator->errors()->first());
+    }
+}

@@ -1,0 +1,106 @@
+<?php
+
+namespace {{ namespace }};
+
+use {{ namespacedModel }};
+use {{ rootNamespace }}Http\Controllers\Controller;
+use {{ namespacedParentModel }};
+use Illuminate\Http\Request;
+use App\Swagger\Attributes\Delete;
+use App\Swagger\Attributes\Get;
+use App\Swagger\Attributes\Patch;
+use App\Swagger\Attributes\Post;
+
+class {{ class }} extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    #[Get(
+        path: '/{{model}}',
+        summary: 'Get {{model}}',
+        tags: '{{model}}',
+        parameters: [
+            ['query' => ''],
+            ['filter' => ''],
+            ['query' => ''],
+            ['query' => ''],
+        ],
+        responses: [
+            ['statusCode' => 200, 'description' => 'OK'],
+        ]
+    )]
+    public function index({{ parentModel }} ${{ parentModelVariable }})
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    #[Post(
+        path: '/{{model}}',
+        summary: 'Create a new {{model}}',
+        tags: '{{model}}',
+        responses: [
+            ['statusCode' => 201, 'description' => 'Created successfully'],
+        ],
+        requestBody: ''
+    )]
+    public function store(Request $request, {{ parentModel }} ${{ parentModelVariable }})
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    #[Get(
+        path: '/{{model}}/{{{ modelVariable }}}',
+        summary: 'Get {{model}}',
+        tags: '{{model}}',
+        parameters: [
+            ['path' => 'id:integer'],
+        ],
+        responses: [
+            ['statusCode' => 200, 'description' => 'OK'],
+        ]
+    )]
+    public function show({{ parentModel }} ${{ parentModelVariable }}, {{ model }} ${{ modelVariable }})
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    #[Patch(
+        path: '/{{model}}/{{{ modelVariable }}}',
+        summary: 'Partially update {{model}}',
+        tags: '{{model}}',
+        parameters: [
+            ['path' => 'id:integer'],
+        ],
+        requestBody: '',
+        responses: [
+            ['statusCode' => 200, 'description' => 'Resource updated successfully'],
+        ],
+    )]
+    public function update(Request $request, {{ parentModel }} ${{ parentModelVariable }}, {{ model }} ${{ modelVariable }})
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    #[Delete(
+        path: '/{{model}}/{{{ modelVariable }}}',
+        summary: 'Delete {{model}}',
+        tags: '{{model}}',
+    )]
+    public function destroy({{ parentModel }} ${{ parentModelVariable }}, {{ model }} ${{ modelVariable }})
+    {
+        //
+    }
+}

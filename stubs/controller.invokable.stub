@@ -1,0 +1,27 @@
+<?php
+
+namespace {{ namespace }};
+
+use {{ rootNamespace }}Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Swagger\Attributes\Post;
+
+class {{ class }} extends Controller
+{
+    /**
+     * Handle the incoming request.
+     */
+    #[Post(
+        path: '/{{class}}',
+        summary: 'Invoke {{class}}',
+        tags: '{{class}}',
+        responses: [
+            ['statusCode' => 201, 'description' => 'Invoke successfully'],
+        ],
+        requestBody: ''
+    )]
+    public function __invoke(Request $request)
+    {
+        //
+    }
+}

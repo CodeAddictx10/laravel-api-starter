@@ -1,0 +1,39 @@
+<?php
+
+namespace {{ namespace }};
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+use App\Swagger\Attributes\ResourceSchema;
+
+#[ResourceSchema(
+    schemaName: '{{ class }}',
+    resourceClass: self::class
+)]
+
+class {{ class }} extends JsonResource
+{
+    /**
+     * Transform the resource into an array.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(Request $request): array
+    {
+        return [
+
+        ];
+    }
+
+    /**
+     * Schema for OpenAPI
+     *
+     * @return array<string,array{type:string,example?:mixed}>
+     */
+    public static function schema(): array
+    {
+        return [
+
+        ];
+    }
+}

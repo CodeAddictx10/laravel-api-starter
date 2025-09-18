@@ -14,15 +14,28 @@ final class Delete extends OADelete
         string $path,
         string $tags,
         string $summary,
-        array $responses = []
+        array $responses = [],
+        array $parameters = []
     ) {
-        $builder = new Response($responses);
+        $defaultResponses = [
+            ['statusCode' => 204, 'description' => 'Resource deleted successfully', 'example' => ['message' => 'Resource deleted successfully']],
+            ['statusCode' => 404, 'description' => 'Resource not found', 'example' => ['message' => 'Resource not found']]
+        ];
+
+        $responses = array_merge($defaultResponses, $responses);
+
+        $builder = new Response($defaultResponses);
+
+
+        $parameters = Param::build($path, $parameters);
+
 
         parent::__construct(
             path: $path,
             summary: $summary,
             tags: [$tags],
-            responses: $builder->responses
+            responses: $builder->responses,
+            parameters: $parameters
         );
     }
 }

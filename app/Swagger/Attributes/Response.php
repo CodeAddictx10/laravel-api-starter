@@ -36,22 +36,56 @@ final class Response
             $status = $def['statusCode'];
             $modelSchema = $def['modelSchema'] ?? null;
             $isArray = $def['isArray'] ?? false;
+            $isPaginated = $def['isPaginated'] ?? false;
+            $example = $def['example'] ?? null;
 
-            // Build schema if modelSchema provided
-            if ($modelSchema) {
-                $refPath = "#/components/schemas/{$modelSchema}";
-                $content = $isArray
-                    ? new JsonContent(type: 'array', items: new Items(ref: $refPath))
-                    : new JsonContent(ref: $refPath);
-            } else {
-                $content = new JsonContent(
+            $content = match (true) {
+                // ✅ Paginated response
+                $isPaginated && $modelSchema => new JsonContent(
                     type: 'object',
                     properties: [
-                        new Property(property: 'success', type: 'boolean', example: $status < 400),
+                        new Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new Items(ref: "#/components/schemas/{$modelSchema}")
+                        ),
+                        new Property(
+                            property: 'meta',
+                            type: 'object',
+                            properties: [
+                                new Property(property: 'current_page', type: 'integer', example: 1),
+                                new Property(property: 'per_page', type: 'integer', example: 15),
+                                new Property(property: 'total', type: 'integer', example: 100),
+                                new Property(property: 'last_page', type: 'integer', example: 7),
+                                new Property(property: 'from', type: 'integer', example: 1),
+                                new Property(property: 'to', type: 'integer', example: 7),
+                                new Property(property: 'next_page_url', type: 'string', example: config('app.url').'/resources?page=2'),
+                                new Property(property: 'prev_page_url', type: 'string', example: config('app.url').'/resources?page=1'),
+                            ]
+                        ),
+                    ]
+                ),
+
+                (bool) $modelSchema => (function () use ($modelSchema, $isArray): JsonContent {
+                    $refPath = "#/components/schemas/{$modelSchema}";
+
+                    return $isArray
+                        ? new JsonContent(type: 'array', items: new Items(ref: $refPath))
+                        : new JsonContent(ref: $refPath);
+                })(),
+
+                (bool) $example => new JsonContent(
+                    type: is_array($example) ? 'object' : 'string',
+                    example: $example
+                ),
+
+                default => new JsonContent(
+                    type: 'object',
+                    properties: [
                         new Property(property: 'message', type: 'string', example: $defaultDescriptions[$status] ?? 'Response'),
                     ]
-                );
-            }
+                ),
+            };
 
             $this->responses[] = new OAResponse(
                 response: $status,
@@ -60,16 +94,18 @@ final class Response
             );
         }
 
-        // Always include 500 once
-        $this->responses[] = new OAResponse(
-            response: 500,
-            description: $defaultDescriptions[500],
-            content: new JsonContent(
-                type: 'object',
-                properties: [
-                    new Property(property: 'message', type: 'string', example: $defaultDescriptions[500]),
-                ]
-            )
-        );
+        // Always include 500 once (if not explicitly defined)
+        if (! collect($this->responses)->contains(fn (OAResponse $r) => $r->response === 500)) {
+            $this->responses[] = new OAResponse(
+                response: 500,
+                description: $defaultDescriptions[500],
+                content: new JsonContent(
+                    type: 'object',
+                    properties: [
+                        new Property(property: 'message', type: 'string', example: $defaultDescriptions[500]),
+                    ]
+                )
+            );
+        }
     }
 }

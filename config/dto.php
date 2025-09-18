@@ -13,8 +13,7 @@ return [
     |
     */
 
-    'namespace' => 'App\\DTOs',
-
+    'namespace' => 'App\\Dtos',
     /*
     |--------------------------------------------------------------------------
     | REQUIRE CASTING
