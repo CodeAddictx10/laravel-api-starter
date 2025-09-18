@@ -15,6 +15,7 @@
         "laravel/tinker": "^2.9",
         "opcodesio/log-viewer": "^3.8",
         "spatie/laravel-activitylog": "^4.10",
+        "spatie/laravel-medialibrary": "^11.14",
         "spatie/laravel-permission": "^6.3",
         "spatie/laravel-query-builder": "^6.0",
         "spatie/laravel-responsecache": "*",
