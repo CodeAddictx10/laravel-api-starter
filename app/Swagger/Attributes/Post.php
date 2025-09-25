@@ -15,7 +15,8 @@ final class Post extends OAPost
         string $tags,
         string $summary,
         array $responses = [],
-        ?string $requestBody = null
+        ?string $requestBody = null,
+        bool $auth = false,
     ) {
         $builder = new Response($responses);
 
@@ -24,7 +25,8 @@ final class Post extends OAPost
             summary: $summary,
             tags: [$tags],
             responses: $builder->responses,
-            requestBody: $requestBody ? RequestBody::create($requestBody) : null
+            requestBody: $requestBody ? RequestBody::create($requestBody) : null,
+            security: $auth ? config('l5-swagger.defaults.securityDefinitions.security', []) : []
         );
     }
 }

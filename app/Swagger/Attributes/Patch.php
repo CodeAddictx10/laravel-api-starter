@@ -16,7 +16,8 @@ final class Patch extends OAPatch
         string $summary,
         array $responses = [],
         array $parameters = [],
-        ?string $requestBody = null
+        ?string $requestBody = null,
+        bool $auth = false,
     ) {
         $builder = new Response($responses);
 
@@ -28,7 +29,8 @@ final class Patch extends OAPatch
             tags: [$tags],
             responses: $builder->responses,
             requestBody: $requestBody ? RequestBody::create($requestBody) : null,
-            parameters: $parameters
+            parameters: $parameters,
+            security: $auth ? config('l5-swagger.defaults.securityDefinitions.security', []) : []
         );
     }
 }

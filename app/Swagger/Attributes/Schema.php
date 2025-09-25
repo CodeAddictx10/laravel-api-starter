@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Swagger\Attributes;
 
 use Attribute;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use OpenApi\Attributes\Property;
 use OpenApi\Attributes\Schema as OASchema;
@@ -69,6 +70,9 @@ final class Schema extends OASchema
             $this->processStringRule($rule, $propertyData);
         } elseif ($rule instanceof Password) {
             $this->processPasswordRule($rule, $propertyData);
+        } elseif ($rule instanceof Rule) {
+            $propertyData['type'] = 'string';
+            $propertyData['description'] = ($propertyData['description'] ?? '') . ' (Rule constraint)';
         }
     }
 

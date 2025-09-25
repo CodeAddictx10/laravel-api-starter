@@ -15,7 +15,8 @@ final class Get extends OAGet
         string $tags,
         string $summary,
         array $responses = [],
-        array $parameters = []
+        array $parameters = [],
+        bool $auth = false
     ) {
         $builder = new Response($responses);
 
@@ -26,7 +27,8 @@ final class Get extends OAGet
             summary: $summary,
             tags: [$tags],
             responses: $builder->responses,
-            parameters: $parameters
+            parameters: $parameters,
+            security: $auth ? config('l5-swagger.defaults.securityDefinitions.security', []) : []
         );
     }
 }

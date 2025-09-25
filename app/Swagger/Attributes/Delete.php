@@ -15,7 +15,8 @@ final class Delete extends OADelete
         string $tags,
         string $summary,
         array $responses = [],
-        array $parameters = []
+        array $parameters = [],
+        bool $auth = false
     ) {
         $defaultResponses = [
             ['statusCode' => 204, 'description' => 'Resource deleted successfully', 'example' => ['message' => 'Resource deleted successfully']],
@@ -35,7 +36,8 @@ final class Delete extends OADelete
             summary: $summary,
             tags: [$tags],
             responses: $builder->responses,
-            parameters: $parameters
+            parameters: $parameters,
+            security: $auth ? config('l5-swagger.defaults.securityDefinitions.security', []) : []
         );
     }
 }
