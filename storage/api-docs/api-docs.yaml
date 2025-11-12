@@ -1,0 +1,443 @@
+openapi: 3.0.0
+info:
+  title: 'Laravel Starter API'
+  description: 'API for Laravel Starter System'
+  contact:
+    email: admin@example.com
+  version: 1.0.0
+servers:
+  -
+    url: /
+    description: 'API Server'
+paths:
+  /v1/roles:
+    get:
+      tags:
+        - Roles
+      summary: 'Get roles'
+      operationId: b117baa0318f4f8f0be9ebbd96664b66
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RoleResource'
+        500:
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: 'Internal server error'
+                type: object
+      security: []
+    post:
+      tags:
+        - Roles
+      summary: 'Create a new role'
+      operationId: 15b3adf7e6d4d04813a7acad0810e41b
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRoleDto'
+      responses:
+        201:
+          description: 'Created successfully'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleResource'
+        500:
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: 'Internal server error'
+                type: object
+      security: []
+  '/v1/roles/{id}':
+    delete:
+      tags:
+        - Roles
+      summary: 'Delete a role'
+      operationId: 944adff677f10486eeef48876729a132
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            default: null
+            example: null
+      responses:
+        204:
+          description: Response
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                message: 'Resource deleted successfully'
+        404:
+          description: 'Not Found'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                message: 'Resource not found'
+        500:
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: 'Internal server error'
+                type: object
+      security: []
+  /v1/users:
+    get:
+      tags:
+        - Users
+      summary: 'Get all users'
+      operationId: 561772d7712651042ff7dbf6e41d9fe9
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        500:
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: 'Internal server error'
+                type: object
+      security: []
+    post:
+      tags:
+        - Users
+      summary: 'Create a new user'
+      operationId: 361db648c47db96160f91f8d2b2c986d
+      responses:
+        201:
+          description: 'Created successfully'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        422:
+          description: 'Validation failed'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: 'Validation failed'
+                type: object
+        500:
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: 'Internal server error'
+                type: object
+      security: []
+  '/v1/users/{id}':
+    get:
+      tags:
+        - Users
+      summary: 'Get user by ID'
+      operationId: e045e3d3795a1f85290994f44aa801fb
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id parameter'
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        404:
+          description: 'Not Found'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: 'Not Found'
+                type: object
+        500:
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: 'Internal server error'
+                type: object
+      security: []
+    put:
+      tags:
+        - Users
+      summary: 'Update user completely'
+      operationId: 3e2ffa4792954e0893c0e22e9e87f03b
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id parameter'
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        404:
+          description: 'Not Found'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: 'Not Found'
+                type: object
+        422:
+          description: 'Validation failed'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: 'Validation failed'
+                type: object
+        500:
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: 'Internal server error'
+                type: object
+      security: []
+    delete:
+      tags:
+        - Users
+      summary: 'Delete user'
+      operationId: b4928d8cd30646a17134307eacc64518
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id parameter'
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: Response
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                message: 'Resource deleted successfully'
+        404:
+          description: 'Not Found'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                message: 'Resource not found'
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: OK
+                type: object
+        500:
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: 'Internal server error'
+                type: object
+      security: []
+    patch:
+      tags:
+        - Users
+      summary: 'Partially update user'
+      operationId: c6b51c972ca62c28d8a06141419b4f66
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Id parameter'
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        404:
+          description: 'Not Found'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: 'Not Found'
+                type: object
+        422:
+          description: 'Validation failed'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: 'Validation failed'
+                type: object
+        500:
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: 'Internal server error'
+                type: object
+      security: []
+components:
+  schemas:
+    CreateRoleDto:
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          maxLength: 50
+          minLength: 3
+          example: admin
+        permissions:
+          properties:
+            '*':
+              type: integer
+          type: object
+      type: object
+      example:
+        name: admin
+        permissions:
+          - 1
+          - 2
+          - 3
+    RoleResource:
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Admin
+        permissions:
+          properties:
+            id:
+              type: integer
+              example: 1
+            name:
+              type: string
+              example: 'Create User'
+          type: object
+          example:
+            id: 1
+            name: 'Create User'
+      type: object
+    User:
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 'John Doe'
+        email:
+          type: string
+          format: email
+          example: john@example.com
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      type: object
+  securitySchemes:
+    sanctum:
+      type: apiKey
+      description: 'Enter token in format (Bearer <token>)'
+      name: Authorization
+      in: header
+tags:
+  -
+    name: Roles
+    description: Roles
+  -
+    name: Users
+    description: Users
+security:
+  -
+    sanctum: []

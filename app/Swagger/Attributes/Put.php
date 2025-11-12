@@ -15,10 +15,13 @@ final class Put extends OAPut
         string $tags,
         string $summary,
         array $responses = [],
+        array $parameters = [],
         ?string $requestBody = null,
         bool $auth = false,
     ) {
         $builder = new Response($responses);
+
+        $parameters = Param::build($path, $parameters);
 
         parent::__construct(
             path: $path,
@@ -26,6 +29,7 @@ final class Put extends OAPut
             tags: [$tags],
             responses: $builder->responses,
             requestBody: $requestBody ? RequestBody::create($requestBody) : null,
+            parameters: $parameters,
             security: $auth ? config('l5-swagger.defaults.securityDefinitions.security', []) : []
         );
     }

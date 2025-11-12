@@ -25,7 +25,7 @@ final class Delete extends OADelete
 
         $responses = array_merge($defaultResponses, $responses);
 
-        $builder = new Response($defaultResponses);
+        $builder = new Response($responses);
 
 
         $parameters = Param::build($path, $parameters);

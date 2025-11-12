@@ -6,9 +6,9 @@ namespace App\Http\Controllers;
 
 /**
  * @OA\Info(
- *     title="SCM Data Upload API",
+ *     title="Laravel Starter API",
  *     version="1.0.0",
- *     description="API for SCM Data Upload System",
+ *     description="API for Laravel Starter System",
  *
  *     @OA\Contact(
  *         email="admin@example.com"

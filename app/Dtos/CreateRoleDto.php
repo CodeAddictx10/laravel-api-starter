@@ -10,7 +10,7 @@ use WendellAdriel\ValidatedDTO\ValidatedDTO;
 
 #[Schema(
     schemaName: 'CreateRoleDto',
-    dtoClass: self::class,
+    ruleClass: self::class,
     examples: [
         'name' => 'admin',
         'permissions' => [1, 2, 3],

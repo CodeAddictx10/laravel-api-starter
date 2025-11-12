@@ -16,7 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
         then: function () {
             logger(base_path('routes/api/v1.php'));
             Route::middleware('api')
-                ->prefix('api/v1')
+                ->prefix('v1')
                 ->name('api.')
                 ->group(base_path('routes/api/v1.php'));
         }

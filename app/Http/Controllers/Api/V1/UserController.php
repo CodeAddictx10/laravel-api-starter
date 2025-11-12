@@ -105,7 +105,6 @@ final class UserController
         tags: 'Users',
         responses: [
             ['statusCode' => 200, 'description' => 'User deleted successfully'],
-            ['statusCode' => 404, 'description' => 'User not found'],
         ]
     )]
     public function destroy(User $user)
