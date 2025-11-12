@@ -18,18 +18,16 @@ final class Param
             // Verbose form already expanded
             if (isset($def['type'], $def['name'])) {
                 $expanded[] = $def;
-
                 continue;
             }
 
             // Shortcut form
             if (is_array($def) && count($def) === 1 && is_string(reset($def))) {
                 $expanded[] = self::expandShortcut($def);
-
                 continue;
             }
 
-            throw new InvalidArgumentException('Invalid parameter definition: '.json_encode($def));
+            throw new InvalidArgumentException('Invalid parameter definition: ' . json_encode($def));
         }
 
         $params = [];
@@ -37,7 +35,7 @@ final class Param
             $params[] = self::fromDefinition($def);
         }
 
-        // Auto detect {placeholders} in path if not already declared
+        // Auto-detect {placeholders} in path if not already declared
         foreach (self::extractPathParams($path) as $paramName) {
             if (collect($params)->contains(fn ($p) => $p->name === $paramName && $p->in === 'path')) {
                 continue;
@@ -47,7 +45,7 @@ final class Param
                 name: $paramName,
                 in: 'path',
                 required: true,
-                description: ucfirst($paramName).' parameter',
+                description: ucfirst($paramName) . ' parameter',
                 schema: new Schema(type: 'string')
             );
         }
@@ -95,6 +93,17 @@ final class Param
             ];
         }
 
+        // header shortcut
+        if ($type === 'header') {
+            [$name, $schema] = array_pad(explode(':', $value, 2), 2, 'string');
+
+            return [
+                'type' => 'header',
+                'name' => $name,
+                'schema' => $schema,
+            ];
+        }
+
         // include shortcut
         if ($type === 'include') {
             $relations = explode(',', $value);
@@ -103,7 +112,7 @@ final class Param
                 'type' => 'query',
                 'name' => 'include',
                 'schema' => 'string',
-                'description' => 'Comma-separated relations to include. Allowed: '.implode(', ', $relations),
+                'description' => 'Comma-separated relations to include. Allowed: ' . implode(', ', $relations),
             ];
         }
 
@@ -121,7 +130,7 @@ final class Param
                 'type' => 'query',
                 'name' => 'sort',
                 'schema' => 'string',
-                'description' => 'Sort by field (prefix with - for desc, + for asc). Allowed: '.implode(', ', $fields),
+                'description' => 'Sort by field (prefix with - for desc, + for asc). Allowed: ' . implode(', ', $fields),
                 'example' => $examples,
             ];
         }
@@ -131,10 +140,21 @@ final class Param
 
     private static function fromDefinition(array $def): Parameter
     {
-        $in = $def['type'] === 'path' ? 'path' : 'query';
-        $schemaType = $def['schema'] ?? ($in === 'path' ? 'string' : 'string');
+        // Support query, path, and header
+        switch ($def['type']) {
+            case 'path':
+                $in = 'path';
+                break;
+            case 'header':
+                $in = 'header';
+                break;
+            default:
+                $in = 'query';
+        }
 
-        if ($in === 'path' && ! in_array($schemaType, ['string', 'integer'], true)) {
+        $schemaType = $def['schema'] ?? 'string';
+
+        if ($in === 'path' && !in_array($schemaType, ['string', 'integer'], true)) {
             throw new InvalidArgumentException(
                 "Path parameter [{$def['name']}] must be 'string' or 'integer', got '{$schemaType}'"
             );
@@ -151,7 +171,7 @@ final class Param
                 default: $in === 'path' ? null : ($def['default'] ?? null),
                 minimum: $def['minimum'] ?? null,
                 maximum: $def['maximum'] ?? null,
-                example: $def['examples'] ?? null
+                example: $def['example'] ?? null
             )
         );
     }
@@ -159,7 +179,6 @@ final class Param
     private static function extractPathParams(string $path): array
     {
         preg_match_all('/\{(\w+)\}/', $path, $matches);
-
         return $matches[1] ?? [];
     }
 }

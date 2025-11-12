@@ -14,12 +14,12 @@ use ReflectionClass;
 #[Attribute(Attribute::TARGET_CLASS)]
 final class Schema extends OASchema
 {
-    public function __construct(string $schemaName, string $dtoClass, array $examples = [])
+    public function __construct(string $schemaName, string $ruleClass, array $examples = [])
     {
         $rules = [];
 
-        if (class_exists($dtoClass)) {
-            $reflection = new ReflectionClass($dtoClass);
+        if (class_exists($ruleClass)) {
+            $reflection = new ReflectionClass($ruleClass);
 
             if ($reflection->hasMethod('rules')) {
                 $instance = $reflection->newInstanceWithoutConstructor();
@@ -30,11 +30,56 @@ final class Schema extends OASchema
         }
 
         $required = [];
-        $properties = [];
+        $nested = []; // To accumulate nested properties grouped by parent property
+        $parentFields = []; // Track which fields are parents of nested properties
 
+        // First pass: identify all parent fields
+        foreach ($rules as $field => $fieldRules) {
+            if (str_contains($field, '.')) {
+                $parent = explode('.', $field, 2)[0];
+                $parentFields[$parent] = true;
+            }
+        }
+
+        // Second pass: process all rules
         foreach ($rules as $field => $fieldRules) {
             $fieldRules = is_array($fieldRules) ? $fieldRules : explode('|', $fieldRules);
 
+            if (str_contains($field, '.')) {
+                // Split to parent and child
+                [$parent, $child] = explode('.', $field, 2);
+
+                // Init parent container if not exists
+                if (!isset($nested[$parent])) {
+                    $nested[$parent] = [
+                        'property' => $parent,
+                        'type' => 'object',
+                        'properties' => [],
+                    ];
+                }
+
+                // Build child property data
+                $childData = [
+                    'property' => $child,
+                    'type' => 'string', // default type
+                ];
+
+                $childRequired = [];
+                foreach ($fieldRules as $rule) {
+                    $this->processRule($rule, $childData, $childRequired, $child);
+                }
+
+                $nested[$parent]['properties'][] = new Property(...$childData);
+
+                continue; // skip adding this as a top-level property
+            }
+
+            // Skip this field if it's a parent of nested properties
+            if (isset($parentFields[$field])) {
+                continue;
+            }
+
+            // Top-level property (not nested)
             $propertyData = [
                 'property' => $field,
                 'type' => 'string',
@@ -48,8 +93,26 @@ final class Schema extends OASchema
                 $propertyData['example'] = $examples[$field];
             }
 
-            $properties[] = new Property(...$propertyData);
+            $topLevelProperties[] = new Property(...$propertyData);
         }
+
+        // Initialize topLevelProperties if not set
+        if (!isset($topLevelProperties)) {
+            $topLevelProperties = [];
+        }
+
+        // Combine top-level and nested properties into one array
+        $properties = array_merge(
+            $topLevelProperties,
+            array_map(
+                fn ($nestedProperty) => new Property(
+                    property: $nestedProperty['property'],
+                    type: $nestedProperty['type'],
+                    properties: $nestedProperty['properties']
+                ),
+                $nested
+            )
+        );
 
         parent::__construct(
             schema: $schemaName,
@@ -64,6 +127,14 @@ final class Schema extends OASchema
     {
         if ($rule === 'required') {
             $required[] = $field;
+        }
+
+        if ($rule === 'sometimes') {
+            $propertyData['description'] = ($propertyData['description'] ?? '') . 'Conditionally required.';
+        }
+
+        if ($rule === 'nullable') {
+            $propertyData['nullable'] = true;
         }
 
         if (is_string($rule)) {
@@ -88,6 +159,18 @@ final class Schema extends OASchema
                 break;
             case 'boolean':
                 $propertyData['type'] = 'boolean';
+                break;
+            case 'url':
+                $propertyData['format'] = 'url';
+                break;
+            case 'ip':
+                $propertyData['format'] = 'ip';
+                break;
+            case 'string':
+                $propertyData['type'] = 'string';
+                break;
+            case 'array':
+                $propertyData['type'] = 'object';
                 break;
         }
 
