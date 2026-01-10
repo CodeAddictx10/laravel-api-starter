@@ -11,7 +11,6 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Validation\Rule;
 use Spatie\QueryBuilder\QueryBuilder;
 
 /**
@@ -22,7 +21,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 final class UserController extends Controller
 {
     /**
-     * Get Users
+     * Get Users.
      *
      * Get a paginated list of users with optional filtering, sorting, and relationship inclusion.
      */
@@ -74,19 +73,6 @@ final class UserController extends Controller
     public function update(UpdateUserDto $dto, User $user): JsonResponse
     {
         $validated = $dto->toArray();
-
-        // Additional validation for email uniqueness if email is being updated
-        if (isset($validated['email']) && $validated['email'] !== $user->email) {
-            \Illuminate\Support\Facades\Validator::make(
-                ['email' => $validated['email']],
-                ['email' => Rule::unique('users', 'email')->ignore($user->id)]
-            )->validate();
-        }
-
-        // Filter out password if not provided
-        if (empty($validated['password'])) {
-            unset($validated['password']);
-        }
 
         $user->update(array_filter($validated));
 

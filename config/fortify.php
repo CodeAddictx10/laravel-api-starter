@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Laravel\Fortify\Features;
 
 return [
@@ -85,7 +87,7 @@ return [
     |
     */
 
-    'prefix' => 'api',
+    'prefix' => 'api/v1',
 
     'domain' => null,
 
