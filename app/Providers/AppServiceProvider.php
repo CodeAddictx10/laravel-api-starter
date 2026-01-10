@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Extensions\Scramble\QueryBuilderParameterExtractor;
+use App\Extensions\Scramble\ValidatedDtoParameterExtractor;
+use Dedoc\Scramble\Scramble;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 final class AppServiceProvider extends ServiceProvider
@@ -14,10 +18,7 @@ final class AppServiceProvider extends ServiceProvider
     /**
      * Register any application services.
      */
-    public function register(): void
-    {
-        //
-    }
+    public function register(): void {}
 
     /**
      * Bootstrap any application services.
@@ -27,6 +28,7 @@ final class AppServiceProvider extends ServiceProvider
         $this->configureCommands();
         $this->configureModels();
         $this->configureQueryLog();
+        $this->configureApiDocs();
     }
 
     /**
@@ -80,7 +82,20 @@ final class AppServiceProvider extends ServiceProvider
     }
 
     /**
-     * configure application's role and permissions
+     * Configure application's role and permissions.
      */
     private function configureRoleAndPermissions(): void {}
+
+    /**
+     * Configure API documentation access.
+     */
+    private function configureApiDocs(): void
+    {
+        Gate::define('viewApiDocs', fn () => app()->environment('local'));
+
+        Scramble::configure()->withParametersExtractors(function ($extractors) {
+            $extractors->append(QueryBuilderParameterExtractor::class);
+            $extractors->append(ValidatedDtoParameterExtractor::class);
+        });
+    }
 }
